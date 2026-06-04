@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mouli.studentmanagementsystem.entity.Student;
@@ -18,5 +20,10 @@ public class StudentController {
     @GetMapping("/students")
     public List<Student> getAllStudents() {
         return studentService.getAllStudents();
+    }
+
+    @PostMapping("/students")
+    public Student addStudent(@RequestBody Student student) {
+        return studentService.saveStudent(student);
     }
 }
