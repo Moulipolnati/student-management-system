@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mouli.studentmanagementsystem.entity.Student;
+import com.mouli.studentmanagementsystem.exception.ResourceNotFoundException;
 import com.mouli.studentmanagementsystem.repository.StudentRepository;
 
 @Service
@@ -26,31 +27,38 @@ public class StudentService {
 
     // Get student by ID
     public Student getStudentById(Long id) {
-        return studentRepository.findById(id).orElse(null);
+
+        return studentRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Student not found with id: " + id));
     }
 
     // Update student
     public Student updateStudent(Long id, Student updatedStudent) {
 
-        Student existingStudent =
-                studentRepository.findById(id).orElse(null);
+        Student existingStudent = studentRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Student not found with id: " + id));
 
-        if (existingStudent != null) {
+        existingStudent.setFirstName(updatedStudent.getFirstName());
+        existingStudent.setLastName(updatedStudent.getLastName());
+        existingStudent.setEmail(updatedStudent.getEmail());
+        existingStudent.setPhone(updatedStudent.getPhone());
+        existingStudent.setAddress(updatedStudent.getAddress());
 
-            existingStudent.setFirstName(updatedStudent.getFirstName());
-            existingStudent.setLastName(updatedStudent.getLastName());
-            existingStudent.setEmail(updatedStudent.getEmail());
-            existingStudent.setPhone(updatedStudent.getPhone());
-            existingStudent.setAddress(updatedStudent.getAddress());
-
-            return studentRepository.save(existingStudent);
-        }
-
-        return null;
+        return studentRepository.save(existingStudent);
     }
 
     // Delete student
     public void deleteStudent(Long id) {
+
+        if (!studentRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    "Student not found with id: " + id);
+        }
+
         studentRepository.deleteById(id);
     }
 }
