@@ -1,6 +1,9 @@
 package com.mouli.studentmanagementsystem.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "students")
@@ -10,16 +13,25 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "First name is required")
     @Column(name = "first_name")
     private String firstName;
 
+    @NotBlank(message = "Last name is required")
     @Column(name = "last_name")
     private String lastName;
 
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
+    @Pattern(
+            regexp = "^[0-9]{10}$",
+            message = "Phone number must be 10 digits"
+    )
     private String phone;
 
+    @NotBlank(message = "Address is required")
     private String address;
 
     public Student() {

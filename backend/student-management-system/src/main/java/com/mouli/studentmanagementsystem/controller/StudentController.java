@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import com.mouli.studentmanagementsystem.entity.Student;
 import com.mouli.studentmanagementsystem.service.StudentService;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class StudentController {
 
@@ -22,7 +24,7 @@ public class StudentController {
 
     // Add student
     @PostMapping("/students")
-    public Student addStudent(@RequestBody Student student) {
+    public Student addStudent(@Valid @RequestBody Student student) {
         return studentService.saveStudent(student);
     }
 
@@ -35,7 +37,7 @@ public class StudentController {
     // Update student
     @PutMapping("/students/{id}")
     public Student updateStudent(@PathVariable Long id,
-                                 @RequestBody Student student) {
+                                 @Valid @RequestBody Student student) {
 
         return studentService.updateStudent(id, student);
     }

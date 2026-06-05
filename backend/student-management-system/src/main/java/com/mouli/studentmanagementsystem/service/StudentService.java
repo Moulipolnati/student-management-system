@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mouli.studentmanagementsystem.entity.Student;
+import com.mouli.studentmanagementsystem.exception.DuplicateEmailException;
 import com.mouli.studentmanagementsystem.exception.ResourceNotFoundException;
 import com.mouli.studentmanagementsystem.repository.StudentRepository;
 
@@ -22,6 +23,14 @@ public class StudentService {
 
     // Save student
     public Student saveStudent(Student student) {
+
+        if (studentRepository.existsByEmail(student.getEmail())) {
+
+            throw new DuplicateEmailException(
+                    "Email already exists: "
+                            + student.getEmail());
+        }
+
         return studentRepository.save(student);
     }
 
@@ -62,3 +71,4 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 }
+
