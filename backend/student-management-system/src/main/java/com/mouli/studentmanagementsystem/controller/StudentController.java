@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import com.mouli.studentmanagementsystem.dto.StudentResponseDTO;
+import com.mouli.studentmanagementsystem.dto.StudentRequestDTO;
 import com.mouli.studentmanagementsystem.entity.Student;
 import com.mouli.studentmanagementsystem.service.StudentService;
 
@@ -18,28 +19,33 @@ public class StudentController {
 
     // Get all students
     @GetMapping("/students")
-    public List<Student> getAllStudents() {
+    public List<StudentResponseDTO> getAllStudents() {
         return studentService.getAllStudents();
     }
 
     // Add student
     @PostMapping("/students")
-    public Student addStudent(@Valid @RequestBody Student student) {
-        return studentService.saveStudent(student);
+    public StudentResponseDTO addStudent(
+            @Valid @RequestBody StudentRequestDTO requestDTO) {
+
+        return studentService.saveStudent(requestDTO);
     }
 
     // Get student by ID
     @GetMapping("/students/{id}")
-    public Student getStudentById(@PathVariable Long id) {
+    public StudentResponseDTO getStudentById(
+            @PathVariable Long id) {
+
         return studentService.getStudentById(id);
     }
 
     // Update student
     @PutMapping("/students/{id}")
-    public Student updateStudent(@PathVariable Long id,
-                                 @Valid @RequestBody Student student) {
+    public StudentResponseDTO updateStudent(
+            @PathVariable Long id,
+            @Valid @RequestBody StudentRequestDTO requestDTO) {
 
-        return studentService.updateStudent(id, student);
+        return studentService.updateStudent(id, requestDTO);
     }
 
     // Delete student

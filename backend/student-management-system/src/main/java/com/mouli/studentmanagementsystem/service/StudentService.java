@@ -1,10 +1,13 @@
 package com.mouli.studentmanagementsystem.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mouli.studentmanagementsystem.dto.StudentRequestDTO;
+import com.mouli.studentmanagementsystem.dto.StudentResponseDTO;
 import com.mouli.studentmanagementsystem.entity.Student;
 import com.mouli.studentmanagementsystem.exception.DuplicateEmailException;
 import com.mouli.studentmanagementsystem.exception.ResourceNotFoundException;
@@ -16,48 +19,100 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
-    // Get all students
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+    // Convert Entity -> ResponseDTO
+    private StudentResponseDTO convertToResponseDTO(Student student) {
+
+        StudentResponseDTO responseDTO =
+                new StudentResponseDTO();
+
+        responseDTO.setId(student.getId());
+        responseDTO.setFirstName(student.getFirstName());
+        responseDTO.setLastName(student.getLastName());
+        responseDTO.setEmail(student.getEmail());
+        responseDTO.setPhone(student.getPhone());
+        responseDTO.setAddress(student.getAddress());
+
+        return responseDTO;
     }
 
-    // Save student
-    public Student saveStudent(Student student) {
+    // Convert RequestDTO -> Entity
+    private Student convertToEntity(
+            StudentRequestDTO requestDTO) {
 
-        if (studentRepository.existsByEmail(student.getEmail())) {
+        Student student = new Student();
+
+        student.setFirstName(requestDTO.getFirstName());
+        student.setLastName(requestDTO.getLastName());
+        student.setEmail(requestDTO.getEmail());
+        student.setPhone(requestDTO.getPhone());
+        student.setAddress(requestDTO.getAddress());
+
+        return student;
+    }
+
+    // Get all students
+    public List<StudentResponseDTO> getAllStudents() {
+
+        List<Student> students =
+                studentRepository.findAll();
+
+        return students.stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Save student using DTO
+    public StudentResponseDTO saveStudent(
+            StudentRequestDTO requestDTO) {
+
+        if (studentRepository.existsByEmail(
+                requestDTO.getEmail())) {
 
             throw new DuplicateEmailException(
                     "Email already exists: "
-                            + student.getEmail());
+                            + requestDTO.getEmail());
         }
 
-        return studentRepository.save(student);
+        Student student =
+                convertToEntity(requestDTO);
+
+        Student savedStudent =
+                studentRepository.save(student);
+
+        return convertToResponseDTO(savedStudent);
     }
 
     // Get student by ID
-    public Student getStudentById(Long id) {
+    public StudentResponseDTO getStudentById(Long id) {
 
-        return studentRepository.findById(id)
+        Student student = studentRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Student not found with id: " + id));
+
+        return convertToResponseDTO(student);
     }
 
     // Update student
-    public Student updateStudent(Long id, Student updatedStudent) {
+    public StudentResponseDTO updateStudent(
+            Long id,
+            StudentRequestDTO requestDTO) {
 
         Student existingStudent = studentRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Student not found with id: " + id));
 
-        existingStudent.setFirstName(updatedStudent.getFirstName());
-        existingStudent.setLastName(updatedStudent.getLastName());
-        existingStudent.setEmail(updatedStudent.getEmail());
-        existingStudent.setPhone(updatedStudent.getPhone());
-        existingStudent.setAddress(updatedStudent.getAddress());
+        existingStudent.setFirstName(requestDTO.getFirstName());
+        existingStudent.setLastName(requestDTO.getLastName());
+        existingStudent.setEmail(requestDTO.getEmail());
+        existingStudent.setPhone(requestDTO.getPhone());
+        existingStudent.setAddress(requestDTO.getAddress());
 
-        return studentRepository.save(existingStudent);
+        Student savedStudent =
+                studentRepository.save(existingStudent);
+
+        return convertToResponseDTO(savedStudent);
     }
 
     // Delete student
@@ -71,4 +126,3 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 }
-
