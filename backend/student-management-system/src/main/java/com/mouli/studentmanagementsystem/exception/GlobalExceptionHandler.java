@@ -55,6 +55,23 @@ public class GlobalExceptionHandler {
                 error,
                 HttpStatus.BAD_REQUEST);
     }
+    // Handle DuplicateEnrollmentException
+    @ExceptionHandler(
+            DuplicateEnrollmentException.class)
+    public ResponseEntity<Map<String, String>>
+            handleDuplicateEnrollmentException(
+                    DuplicateEnrollmentException ex) {
+
+        Map<String, String> error =
+                new HashMap<>();
+
+        error.put("message",
+                ex.getMessage());
+
+        return new ResponseEntity<>(
+                error,
+                HttpStatus.BAD_REQUEST);
+    }
 
     // Handle Validation Errors
     @ExceptionHandler(MethodArgumentNotValidException.class)

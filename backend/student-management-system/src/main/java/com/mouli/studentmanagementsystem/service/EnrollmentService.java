@@ -12,6 +12,7 @@ import com.mouli.studentmanagementsystem.dto.EnrollmentResponseDTO;
 import com.mouli.studentmanagementsystem.entity.Course;
 import com.mouli.studentmanagementsystem.entity.Enrollment;
 import com.mouli.studentmanagementsystem.entity.Student;
+import com.mouli.studentmanagementsystem.exception.DuplicateEnrollmentException;
 import com.mouli.studentmanagementsystem.exception.ResourceNotFoundException;
 import com.mouli.studentmanagementsystem.repository.CourseRepository;
 import com.mouli.studentmanagementsystem.repository.EnrollmentRepository;
@@ -86,6 +87,14 @@ public class EnrollmentService {
                                 new ResourceNotFoundException(
                                         "Course not found with id: "
                                                 + requestDTO.getCourseId()));
+
+        // Prevent duplicate enrollment
+        if (enrollmentRepository.existsByStudentAndCourse(
+                student, course)) {
+
+            throw new DuplicateEnrollmentException(
+                    "Student is already enrolled in this course");
+        }
 
         Enrollment enrollment = new Enrollment();
 
