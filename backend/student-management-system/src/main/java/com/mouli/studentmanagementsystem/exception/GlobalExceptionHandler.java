@@ -41,6 +41,20 @@ public class GlobalExceptionHandler {
                 error,
                 HttpStatus.BAD_REQUEST);
     }
+    // Handle duplicateCourseException
+    @ExceptionHandler(DuplicateCourseException.class)
+    public ResponseEntity<Map<String, String>>
+            handleDuplicateCourseException(
+                    DuplicateCourseException ex) {
+
+        Map<String, String> error = new HashMap<>();
+
+        error.put("message", ex.getMessage());
+
+        return new ResponseEntity<>(
+                error,
+                HttpStatus.BAD_REQUEST);
+    }
 
     // Handle Validation Errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
