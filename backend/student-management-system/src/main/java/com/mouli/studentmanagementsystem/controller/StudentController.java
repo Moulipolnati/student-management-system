@@ -22,6 +22,18 @@ public class StudentController {
     public List<StudentResponseDTO> getAllStudents() {
         return studentService.getAllStudents();
     }
+    // Get students with pagination and sorting
+    @GetMapping("/students/page")
+    public List<StudentResponseDTO> getStudentsWithPaginationAndSorting(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam String sortBy) {
+
+        return studentService.getStudentsWithPaginationAndSorting(
+                page,
+                size,
+                sortBy);
+    }
 
     // Add student
     @PostMapping("/students")
@@ -37,6 +49,13 @@ public class StudentController {
             @PathVariable Long id) {
 
         return studentService.getStudentById(id);
+    }
+    // Search students by first name
+    @GetMapping("/students/search")
+    public List<StudentResponseDTO> searchStudents(
+            @RequestParam String keyword) {
+
+        return studentService.searchStudents(keyword);
     }
 
     // Update student

@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
 
 import com.mouli.studentmanagementsystem.dto.StudentRequestDTO;
 import com.mouli.studentmanagementsystem.dto.StudentResponseDTO;
@@ -61,6 +65,27 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
+    // Get students with pagination
+    public List<StudentResponseDTO> getStudentsWithPaginationAndSorting(
+            int page,
+            int size,
+            String sortBy) {
+
+        Pageable pageable =
+                PageRequest.of(
+                        page,
+                        size,
+                        Sort.by(sortBy));
+
+        Page<Student> studentPage =
+                studentRepository.findAll(pageable);
+
+        return studentPage.getContent()
+                .stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
     // Save student using DTO
     public StudentResponseDTO saveStudent(
             StudentRequestDTO requestDTO) {
@@ -91,6 +116,19 @@ public class StudentService {
                                 "Student not found with id: " + id));
 
         return convertToResponseDTO(student);
+    }
+  // Search students by first name
+    public List<StudentResponseDTO> searchStudents(
+            String keyword) {
+
+        List<Student> students =
+                studentRepository
+                        .findByFirstNameContainingIgnoreCase(
+                                keyword);
+
+        return students.stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
     }
 
     // Update student
