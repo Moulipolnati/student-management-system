@@ -72,7 +72,58 @@ public class GlobalExceptionHandler {
                 error,
                 HttpStatus.BAD_REQUEST);
     }
+    // DuplicateUsernameException handler
+    @ExceptionHandler(
+            DuplicateUsernameException.class)
+    public ResponseEntity<Map<String, String>>
+            handleDuplicateUsernameException(
+                    DuplicateUsernameException ex) {
 
+        Map<String, String> error =
+                new HashMap<>();
+
+        error.put("message",
+                ex.getMessage());
+
+        return new ResponseEntity<>(
+                error,
+                HttpStatus.BAD_REQUEST);
+    }
+    // EmailException handler
+    @ExceptionHandler(
+    DuplicateUserEmailException.class)
+public ResponseEntity<Map<String, String>>
+    handleDuplicateUserEmailException(
+            DuplicateUserEmailException ex) {
+
+Map<String, String> error =
+        new HashMap<>();
+
+error.put("message",
+        ex.getMessage());
+
+return new ResponseEntity<>(
+        error,
+        HttpStatus.BAD_REQUEST);
+}
+    // Handle InvalidCredentialsException
+    @ExceptionHandler(
+            InvalidCredentialsException.class)
+    public ResponseEntity<Map<String, String>>
+            handleInvalidCredentialsException(
+                    InvalidCredentialsException ex) {
+
+        Map<String, String> error =
+                new HashMap<>();
+
+        error.put(
+                "message",
+                ex.getMessage());
+
+        return new ResponseEntity<>(
+                error,
+                HttpStatus.UNAUTHORIZED);
+    }
     // Handle Validation Errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>>
