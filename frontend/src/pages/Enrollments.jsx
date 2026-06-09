@@ -1,9 +1,21 @@
+import Navbar from "../components/Navbar";
+
 function Enrollments() {
-  return (
-    <div className="container mt-5">
-      <h2>Enrollments Page</h2>
-    </div>
-  );
+
+    return (
+
+        <>
+            <Navbar />
+
+            <div className="container mt-4">
+
+                <h2>
+                    Enrollments Page
+                </h2>
+
+            </div>
+        </>
+    );
 }
 
 export default Enrollments;

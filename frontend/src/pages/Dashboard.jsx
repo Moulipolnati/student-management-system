@@ -1,32 +1,24 @@
-function Dashboard() {
+import Navbar from "../components/Navbar";
 
-    const token =
-        localStorage.getItem("token");
+function Dashboard() {
 
     return (
 
-        <div className="container mt-5">
+        <>
+            <Navbar />
 
-            <h2>
-                Dashboard
-            </h2>
+            <div className="container mt-4">
 
-            <p>
-                Login Successful
-            </p>
+                <h2>
+                    Dashboard
+                </h2>
 
-            <p>
-                JWT Token Stored:
-            </p>
+                <p>
+                    Welcome to Student Management System
+                </p>
 
-            <textarea
-                className="form-control"
-                rows="6"
-                value={token || ""}
-                readOnly
-            />
-
-        </div>
+            </div>
+        </>
     );
 }
 

@@ -1,9 +1,21 @@
+import Navbar from "../components/Navbar";
+
 function Courses() {
-  return (
-    <div className="container mt-5">
-      <h2>Courses Page</h2>
-    </div>
-  );
+
+    return (
+
+        <>
+            <Navbar />
+
+            <div className="container mt-4">
+
+                <h2>
+                    Courses Page
+                </h2>
+
+            </div>
+        </>
+    );
 }
 
 export default Courses;
