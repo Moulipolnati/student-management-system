@@ -7,8 +7,12 @@ const getAllCourses = () => {
 const addCourse = (course) => {
     return api.post("/courses", course);
 };
+const deleteCourse = (id) => {
+    return api.delete(`/courses/${id}`);
+};
 
 export default {
     getAllCourses,
-    addCourse
+    addCourse,
+    deleteCourse
 };

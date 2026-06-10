@@ -63,6 +63,29 @@ function Courses() {
         }
     };
 
+    const handleDelete = async (id) => {
+
+        const confirmDelete =
+            window.confirm(
+                "Are you sure you want to delete this course?"
+            );
+
+        if (!confirmDelete) {
+            return;
+        }
+
+        try {
+
+            await CourseService.deleteCourse(id);
+
+            loadCourses();
+
+        } catch (error) {
+
+            console.error(error);
+        }
+    };
+
     return (
 
         <>
@@ -159,6 +182,7 @@ function Courses() {
                         <th>Description</th>
                         <th>Duration</th>
                         <th>Fee</th>
+                        <th>Actions</th>
 
                     </tr>
 
@@ -175,6 +199,20 @@ function Courses() {
                             <td>{course.description}</td>
                             <td>{course.duration}</td>
                             <td>{course.fee}</td>
+
+                            <td>
+
+                                <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() =>
+                                        handleDelete(course.id)
+                                    }>
+
+                                    Delete
+
+                                </button>
+
+                            </td>
 
                         </tr>
 
