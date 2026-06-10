@@ -6,6 +6,8 @@ function Courses() {
 
     const [courses, setCourses] = useState([]);
 
+    const [editingId, setEditingId] = useState(null);
+
     const [course, setCourse] = useState({
         courseName: "",
         description: "",
@@ -46,7 +48,19 @@ function Courses() {
 
         try {
 
-            await CourseService.addCourse(course);
+            if (editingId) {
+
+                await CourseService.updateCourse(
+                    editingId,
+                    course
+                );
+
+            } else {
+
+                await CourseService.addCourse(
+                    course
+                );
+            }
 
             setCourse({
                 courseName: "",
@@ -55,12 +69,26 @@ function Courses() {
                 fee: ""
             });
 
+            setEditingId(null);
+
             loadCourses();
 
         } catch (error) {
 
             console.error(error);
         }
+    };
+
+    const handleEdit = (course) => {
+
+        setCourse({
+            courseName: course.courseName,
+            description: course.description,
+            duration: course.duration,
+            fee: course.fee
+        });
+
+        setEditingId(course.id);
     };
 
     const handleDelete = async (id) => {
@@ -93,7 +121,11 @@ function Courses() {
 
             <div className="container mt-4">
 
-                <h2>Add Course</h2>
+                <h2>
+                    {editingId
+                        ? "Update Course"
+                        : "Add Course"}
+                </h2>
 
                 <form onSubmit={handleSubmit}>
 
@@ -161,7 +193,9 @@ function Courses() {
                         type="submit"
                         className="btn btn-primary">
 
-                        Save Course
+                        {editingId
+                            ? "Update Course"
+                            : "Save Course"}
 
                     </button>
 
@@ -201,6 +235,16 @@ function Courses() {
                             <td>{course.fee}</td>
 
                             <td>
+
+                                <button
+                                    className="btn btn-warning btn-sm me-2"
+                                    onClick={() =>
+                                        handleEdit(course)
+                                    }>
+
+                                    Edit
+
+                                </button>
 
                                 <button
                                     className="btn btn-danger btn-sm"

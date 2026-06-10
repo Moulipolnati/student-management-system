@@ -7,6 +7,11 @@ const getAllCourses = () => {
 const addCourse = (course) => {
     return api.post("/courses", course);
 };
+
+const updateCourse = (id, course) => {
+    return api.put(`/courses/${id}`, course);
+};
+
 const deleteCourse = (id) => {
     return api.delete(`/courses/${id}`);
 };
@@ -14,5 +19,6 @@ const deleteCourse = (id) => {
 export default {
     getAllCourses,
     addCourse,
+    updateCourse,
     deleteCourse
 };
