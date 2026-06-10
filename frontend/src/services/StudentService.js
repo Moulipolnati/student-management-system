@@ -17,10 +17,17 @@ const searchStudents = (keyword) => {
         `/students/search?keyword=${keyword}`
     );
 };
+const updateStudent = (id, student) => {
+    return api.put(
+        `/students/${id}`,
+        student
+    );
+};
 
 export default {
     getAllStudents,
     addStudent,
     deleteStudent,
-    searchStudents
+    searchStudents,
+    updateStudent
 };

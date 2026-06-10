@@ -8,6 +8,8 @@ function Students() {
 
     const [keyword, setKeyword] = useState("");
 
+    const [editingId, setEditingId] = useState(null);
+
     const [student, setStudent] = useState({
         firstName: "",
         lastName: "",
@@ -42,14 +44,11 @@ function Students() {
             if (keyword.trim() === "") {
 
                 loadStudents();
-
                 return;
             }
 
             const response =
-                await StudentService.searchStudents(
-                    keyword
-                );
+                await StudentService.searchStudents(keyword);
 
             setStudents(response.data);
 
@@ -73,7 +72,19 @@ function Students() {
 
         try {
 
-            await StudentService.addStudent(student);
+            if (editingId) {
+
+                await StudentService.updateStudent(
+                    editingId,
+                    student
+                );
+
+            } else {
+
+                await StudentService.addStudent(
+                    student
+                );
+            }
 
             setStudent({
                 firstName: "",
@@ -83,12 +94,27 @@ function Students() {
                 address: ""
             });
 
+            setEditingId(null);
+
             loadStudents();
 
         } catch (error) {
 
             console.error(error);
         }
+    };
+
+    const handleEdit = (student) => {
+
+        setStudent({
+            firstName: student.firstName,
+            lastName: student.lastName,
+            email: student.email,
+            phone: student.phone,
+            address: student.address
+        });
+
+        setEditingId(student.id);
     };
 
     const handleDelete = async (id) => {
@@ -149,7 +175,11 @@ function Students() {
 
                 </div>
 
-                <h2>Add Student</h2>
+                <h2>
+                    {editingId
+                        ? "Update Student"
+                        : "Add Student"}
+                </h2>
 
                 <form onSubmit={handleSubmit}>
 
@@ -220,7 +250,9 @@ function Students() {
                         type="submit"
                         className="btn btn-primary">
 
-                        Save Student
+                        {editingId
+                            ? "Update Student"
+                            : "Save Student"}
 
                     </button>
 
@@ -256,6 +288,16 @@ function Students() {
                             <td>{student.email}</td>
 
                             <td>
+
+                                <button
+                                    className="btn btn-warning btn-sm me-2"
+                                    onClick={() =>
+                                        handleEdit(student)
+                                    }>
+
+                                    Edit
+
+                                </button>
 
                                 <button
                                     className="btn btn-danger btn-sm"
