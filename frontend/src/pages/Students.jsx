@@ -6,6 +6,8 @@ function Students() {
 
     const [students, setStudents] = useState([]);
 
+    const [keyword, setKeyword] = useState("");
+
     const [student, setStudent] = useState({
         firstName: "",
         lastName: "",
@@ -24,6 +26,30 @@ function Students() {
 
             const response =
                 await StudentService.getAllStudents();
+
+            setStudents(response.data);
+
+        } catch (error) {
+
+            console.error(error);
+        }
+    };
+
+    const handleSearch = async () => {
+
+        try {
+
+            if (keyword.trim() === "") {
+
+                loadStudents();
+
+                return;
+            }
+
+            const response =
+                await StudentService.searchStudents(
+                    keyword
+                );
 
             setStudents(response.data);
 
@@ -64,34 +90,64 @@ function Students() {
             console.error(error);
         }
     };
+
     const handleDelete = async (id) => {
 
-    const confirmDelete =
-        window.confirm(
-            "Are you sure you want to delete this student?"
-        );
+        const confirmDelete =
+            window.confirm(
+                "Are you sure you want to delete this student?"
+            );
 
-    if (!confirmDelete) {
-        return;
-    }
+        if (!confirmDelete) {
+            return;
+        }
 
-    try {
+        try {
 
-        await StudentService.deleteStudent(id);
+            await StudentService.deleteStudent(id);
 
-        loadStudents();
+            loadStudents();
 
-    } catch (error) {
+        } catch (error) {
 
-        console.error(error);
-    }
-};
+            console.error(error);
+        }
+    };
 
     return (
         <>
             <Navbar />
 
             <div className="container mt-4">
+
+                <div className="row mb-4">
+
+                    <div className="col-md-8">
+
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search Student..."
+                            value={keyword}
+                            onChange={(e) =>
+                                setKeyword(e.target.value)}
+                        />
+
+                    </div>
+
+                    <div className="col-md-4">
+
+                        <button
+                            className="btn btn-success w-100"
+                            onClick={handleSearch}>
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
 
                 <h2>Add Student</h2>
 
@@ -199,19 +255,19 @@ function Students() {
                             <td>{student.lastName}</td>
                             <td>{student.email}</td>
 
-<td>
+                            <td>
 
-    <button
-        className="btn btn-danger btn-sm"
-        onClick={() =>
-            handleDelete(student.id)
-        }>
+                                <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() =>
+                                        handleDelete(student.id)
+                                    }>
 
-        Delete
+                                    Delete
 
-    </button>
+                                </button>
 
-</td>
+                            </td>
 
                         </tr>
 
