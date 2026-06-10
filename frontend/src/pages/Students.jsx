@@ -64,6 +64,28 @@ function Students() {
             console.error(error);
         }
     };
+    const handleDelete = async (id) => {
+
+    const confirmDelete =
+        window.confirm(
+            "Are you sure you want to delete this student?"
+        );
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    try {
+
+        await StudentService.deleteStudent(id);
+
+        loadStudents();
+
+    } catch (error) {
+
+        console.error(error);
+    }
+};
 
     return (
         <>
@@ -161,6 +183,7 @@ function Students() {
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
+                        <th>Actions</th>
                     </tr>
 
                     </thead>
@@ -175,6 +198,20 @@ function Students() {
                             <td>{student.firstName}</td>
                             <td>{student.lastName}</td>
                             <td>{student.email}</td>
+
+<td>
+
+    <button
+        className="btn btn-danger btn-sm"
+        onClick={() =>
+            handleDelete(student.id)
+        }>
+
+        Delete
+
+    </button>
+
+</td>
 
                         </tr>
 

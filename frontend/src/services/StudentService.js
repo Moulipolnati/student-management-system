@@ -8,7 +8,12 @@ const addStudent = (student) => {
     return api.post("/students", student);
 };
 
+const deleteStudent = (id) => {
+    return api.delete(`/students/${id}`);
+};
+
 export default {
     getAllStudents,
-    addStudent
+    addStudent,
+    deleteStudent
 };
