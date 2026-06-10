@@ -99,6 +99,29 @@ function Enrollments() {
         }
     };
 
+    const handleDelete = async (id) => {
+
+        const confirmDelete =
+            window.confirm(
+                "Are you sure you want to delete this enrollment?"
+            );
+
+        if (!confirmDelete) {
+            return;
+        }
+
+        try {
+
+            await EnrollmentService.deleteEnrollment(id);
+
+            loadEnrollments();
+
+        } catch (error) {
+
+            console.error(error);
+        }
+    };
+
     return (
 
         <>
@@ -131,9 +154,7 @@ function Enrollments() {
                                         key={student.id}
                                         value={student.id}>
 
-                                        {student.firstName}
-                                        {" "}
-                                        {student.lastName}
+                                        {student.firstName} {student.lastName}
 
                                     </option>
 
@@ -198,6 +219,7 @@ function Enrollments() {
                         <th>Student</th>
                         <th>Course</th>
                         <th>Enrollment Date</th>
+                        <th>Actions</th>
 
                     </tr>
 
@@ -221,6 +243,22 @@ function Enrollments() {
 
                             <td>
                                 {enrollment.enrollmentDate}
+                            </td>
+
+                            <td>
+
+                                <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() =>
+                                        handleDelete(
+                                            enrollment.id
+                                        )
+                                    }>
+
+                                    Delete
+
+                                </button>
+
                             </td>
 
                         </tr>

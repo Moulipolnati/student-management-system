@@ -8,7 +8,12 @@ const createEnrollment = (enrollment) => {
     return api.post("/enrollments", enrollment);
 };
 
+const deleteEnrollment = (id) => {
+    return api.delete(`/enrollments/${id}`);
+};
+
 export default {
     getAllEnrollments,
-    createEnrollment
+    createEnrollment,
+    deleteEnrollment
 };
