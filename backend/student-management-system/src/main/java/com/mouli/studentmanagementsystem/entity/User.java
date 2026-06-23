@@ -26,6 +26,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "otp")
+    private String otp;
+
+    @Column(name = "otp_expiry")
+    private Long otpExpiry;
+
     public User() {
     }
 
@@ -34,13 +40,17 @@ public class User {
             String username,
             String email,
             String password,
-            Role role) {
+            Role role,
+            String otp,
+            Long otpExpiry) {
 
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.otp = otp;
+        this.otpExpiry = otpExpiry;
     }
 
     public Long getId() {
@@ -91,5 +101,25 @@ public class User {
             Role role) {
 
         this.role = role;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(
+            String otp) {
+
+        this.otp = otp;
+    }
+
+    public Long getOtpExpiry() {
+        return otpExpiry;
+    }
+
+    public void setOtpExpiry(
+            Long otpExpiry) {
+
+        this.otpExpiry = otpExpiry;
     }
 }

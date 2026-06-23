@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +34,20 @@ public class JwtAuthenticationFilter
             FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path =
+                request.getServletPath();
+
+        if (path.startsWith("/auth/")
+                || path.startsWith("/swagger-ui/")
+                || path.startsWith("/v3/api-docs")) {
+
+            filterChain.doFilter(
+                    request,
+                    response);
+
+            return;
+        }
+
         String authHeader =
                 request.getHeader(
                         "Authorization");
@@ -51,9 +66,22 @@ public class JwtAuthenticationFilter
         String token =
                 authHeader.substring(7);
 
-        String username =
-                jwtService.extractUsername(
-                        token);
+        String username = null;
+
+        try {
+
+            username =
+                    jwtService.extractUsername(
+                            token);
+
+        } catch (ExpiredJwtException e) {
+
+            filterChain.doFilter(
+                    request,
+                    response);
+
+            return;
+        }
 
         if (username != null
                 && SecurityContextHolder

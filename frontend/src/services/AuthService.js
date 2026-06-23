@@ -1,22 +1,14 @@
-import axios from "axios";
+import api from "./api";
 
-const API_URL = "http://localhost:8081/auth";
-
-const login = (loginData) => {
-    return axios.post(
-        `${API_URL}/login`,
-        loginData
-    );
+const register = (user) => {
+    return api.post("/auth/register", user);
 };
 
-const register = (registerData) => {
-    return axios.post(
-        `${API_URL}/register`,
-        registerData
-    );
+const login = (user) => {
+    return api.post("/auth/login", user);
 };
 
 export default {
-    login,
-    register
+    register,
+    login
 };

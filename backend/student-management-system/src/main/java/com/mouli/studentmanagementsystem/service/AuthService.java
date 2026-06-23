@@ -1,10 +1,15 @@
 package com.mouli.studentmanagementsystem.service;
 
+
+import java.util.Random;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.mouli.studentmanagementsystem.dto.ResetPasswordRequestDTO;
 import com.mouli.studentmanagementsystem.dto.AuthResponseDTO;
+import com.mouli.studentmanagementsystem.dto.ForgotPasswordRequestDTO;
 import com.mouli.studentmanagementsystem.dto.LoginRequestDTO;
 import com.mouli.studentmanagementsystem.dto.RegisterRequestDTO;
 import com.mouli.studentmanagementsystem.entity.Role;
@@ -14,6 +19,7 @@ import com.mouli.studentmanagementsystem.exception.DuplicateUsernameException;
 import com.mouli.studentmanagementsystem.exception.InvalidCredentialsException;
 import com.mouli.studentmanagementsystem.repository.UserRepository;
 import com.mouli.studentmanagementsystem.security.JwtService;
+import com.mouli.studentmanagementsystem.dto.VerifyOtpRequestDTO;
 
 @Service
 public class AuthService {
@@ -96,5 +102,96 @@ public class AuthService {
         return new AuthResponseDTO(
                 "Login successful",
                 token);
+    }
+
+    // Forgot Password
+    public AuthResponseDTO forgotPassword(
+            ForgotPasswordRequestDTO requestDTO) {
+
+        User user = userRepository
+                .findByEmail(
+                        requestDTO.getEmail())
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Email not found"));
+
+        String otp =
+                String.valueOf(
+                        100000 +
+                        new Random().nextInt(900000));
+
+        user.setOtp(otp);
+
+        user.setOtpExpiry(
+                System.currentTimeMillis()
+                        + 5 * 60 * 1000);
+
+        userRepository.save(user);
+
+        System.out.println(
+                "OTP for "
+                        + user.getEmail()
+                        + " : "
+                        + otp);
+
+        return new AuthResponseDTO(
+                "OTP generated successfully");
+        
+    }
+ // Verify OTP
+    public AuthResponseDTO verifyOtp(
+            VerifyOtpRequestDTO requestDTO) {
+
+        User user = userRepository
+                .findByEmail(
+                        requestDTO.getEmail())
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Email not found"));
+
+        if (user.getOtp() == null) {
+
+            throw new RuntimeException(
+                    "No OTP generated");
+        }
+
+        if (!user.getOtp().equals(
+                requestDTO.getOtp())) {
+
+            throw new RuntimeException(
+                    "Invalid OTP");
+        }
+
+        if (System.currentTimeMillis()
+                > user.getOtpExpiry()) {
+
+            throw new RuntimeException(
+                    "OTP expired");
+        }
+
+        return new AuthResponseDTO(
+                "OTP verified successfully");
+    }
+    public AuthResponseDTO resetPassword(
+            ResetPasswordRequestDTO requestDTO) {
+
+        User user = userRepository
+                .findByEmail(
+                        requestDTO.getEmail())
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Email not found"));
+
+        user.setPassword(
+                passwordEncoder.encode(
+                        requestDTO.getNewPassword()));
+
+        user.setOtp(null);
+        user.setOtpExpiry(null);
+
+        userRepository.save(user);
+
+        return new AuthResponseDTO(
+                "Password reset successfully");
     }
 }

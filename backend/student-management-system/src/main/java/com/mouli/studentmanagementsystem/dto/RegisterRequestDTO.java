@@ -48,3 +48,4 @@ public class RegisterRequestDTO {
         this.password = password;
     }
 }
+
