@@ -10,6 +10,8 @@ import Enrollments from "./pages/Enrollments";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOtp from "./pages/VerifyOtp";
 import ResetPassword from "./pages/ResetPassword";
+import VerifyRegistrationOtp
+from "./pages/VerifyRegistrationOtp";
 
 function App() {
 
@@ -59,6 +61,13 @@ function App() {
           path="/enrollments"
           element={<Enrollments />}
         />
+
+        <Route
+    path="/verify-registration-otp"
+    element={
+        <VerifyRegistrationOtp />
+    }
+/>
 
       </Routes>
 

@@ -4,6 +4,7 @@ package com.mouli.studentmanagementsystem.service;
 import java.util.Random;
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,11 @@ import com.mouli.studentmanagementsystem.exception.InvalidCredentialsException;
 import com.mouli.studentmanagementsystem.repository.UserRepository;
 import com.mouli.studentmanagementsystem.security.JwtService;
 import com.mouli.studentmanagementsystem.dto.VerifyOtpRequestDTO;
+import com.mouli.studentmanagementsystem.service.EmailService;
+import com.mouli.studentmanagementsystem.dto.SendRegistrationOtpRequestDTO;
+import com.mouli.studentmanagementsystem.dto.VerifyRegistrationOtpRequestDTO;
+import com.mouli.studentmanagementsystem.entity.PendingRegistration;
+import com.mouli.studentmanagementsystem.repository.PendingRegistrationRepository;
 
 @Service
 public class AuthService {
@@ -32,6 +38,12 @@ public class AuthService {
 
     @Autowired
     private JwtService jwtService;
+    
+    @Autowired
+    private EmailService emailService;
+    
+    @Autowired
+    private PendingRegistrationRepository pendingRegistrationRepository;
 
     // Register User
     public AuthResponseDTO registerUser(
@@ -128,11 +140,9 @@ public class AuthService {
 
         userRepository.save(user);
 
-        System.out.println(
-                "OTP for "
-                        + user.getEmail()
-                        + " : "
-                        + otp);
+        emailService.sendOtpEmail(
+                user.getEmail(),
+                otp);
 
         return new AuthResponseDTO(
                 "OTP generated successfully");
@@ -193,5 +203,111 @@ public class AuthService {
 
         return new AuthResponseDTO(
                 "Password reset successfully");
+    }
+    
+    public AuthResponseDTO sendRegistrationOtp(
+            SendRegistrationOtpRequestDTO requestDTO) {
+
+        if (userRepository.existsByUsername(
+                requestDTO.getUsername())) {
+
+            throw new DuplicateUsernameException(
+                    "Username already exists");
+        }
+
+        if (userRepository.existsByEmail(
+                requestDTO.getEmail())) {
+
+            throw new DuplicateUserEmailException(
+                    "Email already exists");
+        }
+
+        String otp =
+                String.valueOf(
+                        100000 +
+                        new Random().nextInt(900000));
+
+        PendingRegistration pending =
+                pendingRegistrationRepository
+                        .findByEmail(
+                                requestDTO.getEmail())
+                        .orElse(
+                                new PendingRegistration());
+
+        pending.setUsername(
+                requestDTO.getUsername());
+
+        pending.setEmail(
+                requestDTO.getEmail());
+
+        pending.setPassword(
+                passwordEncoder.encode(
+                        requestDTO.getPassword()));
+
+        pending.setOtp(
+                otp);
+
+        pending.setOtpExpiry(
+                System.currentTimeMillis()
+                        + 5 * 60 * 1000);
+
+        pendingRegistrationRepository.save(
+                pending);
+
+        emailService.sendOtpEmail(
+                requestDTO.getEmail(),
+                otp);
+
+        return new AuthResponseDTO(
+                "Registration OTP sent successfully");
+    }
+    
+    public AuthResponseDTO verifyRegistrationOtp(
+            VerifyRegistrationOtpRequestDTO requestDTO) {
+
+        PendingRegistration pending =
+                pendingRegistrationRepository
+                        .findByEmail(
+                                requestDTO.getEmail())
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Registration request not found"));
+
+        if (!pending.getOtp().equals(
+                requestDTO.getOtp())) {
+
+            throw new RuntimeException(
+                    "Invalid OTP");
+        }
+
+        if (System.currentTimeMillis()
+                > pending.getOtpExpiry()) {
+
+            throw new RuntimeException(
+                    "OTP expired");
+        }
+
+        User user = new User();
+
+        user.setUsername(
+                pending.getUsername());
+
+        user.setEmail(
+                pending.getEmail());
+
+        user.setPassword(
+                pending.getPassword());
+
+        user.setRole(
+                Role.ROLE_USER);
+
+        userRepository.save(
+                user);
+
+        pendingRegistrationRepository.delete(
+                pending);
+
+        return new AuthResponseDTO(
+                "Registration successful");
     }
 }

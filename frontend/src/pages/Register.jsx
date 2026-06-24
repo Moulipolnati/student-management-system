@@ -29,21 +29,48 @@ function Register() {
         try {
 
             const response =
-                await AuthService.register(user);
+                await AuthService
+                    .sendRegistrationOtp(
+                        user
+                    );
 
-            setMessage(response.data.message);
+            localStorage.setItem(
+                "registrationEmail",
+                user.email
+            );
+
+            setMessage(
+                response.data.message
+            );
 
             setTimeout(() => {
-                navigate("/");
-            }, 2000);
+
+                navigate(
+                    "/verify-registration-otp"
+                );
+
+            }, 1500);
 
         } catch (error) {
 
             console.error(error);
 
-            setMessage(
-                "Registration failed"
-            );
+            if (
+                error.response &&
+                error.response.data &&
+                error.response.data.message
+            ) {
+
+                setMessage(
+                    error.response.data.message
+                );
+
+            } else {
+
+                setMessage(
+                    "Failed to send registration OTP"
+                );
+            }
         }
     };
 
@@ -63,16 +90,20 @@ function Register() {
                                 Register
                             </h2>
 
-                            {message && (
+                            {
+                                message &&
 
                                 <div className="alert alert-info">
 
                                     {message}
 
                                 </div>
-                            )}
+                            }
 
-                            <form onSubmit={handleSubmit}>
+                            <form
+                                onSubmit={
+                                    handleSubmit
+                                }>
 
                                 <div className="mb-3">
 
@@ -129,7 +160,7 @@ function Register() {
                                     type="submit"
                                     className="btn btn-primary w-100">
 
-                                    Register
+                                    Send OTP
 
                                 </button>
 
@@ -139,8 +170,7 @@ function Register() {
 
                                 Already have an account?
 
-                                <Link
-                                    to="/">
+                                <Link to="/login">
 
                                     Login
 

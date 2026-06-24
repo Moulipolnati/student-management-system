@@ -2,6 +2,7 @@ package com.mouli.studentmanagementsystem.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 import org.springframework.web.bind.annotation.*;
 
 import com.mouli.studentmanagementsystem.dto.AuthResponseDTO;
@@ -11,6 +12,8 @@ import com.mouli.studentmanagementsystem.dto.RegisterRequestDTO;
 import com.mouli.studentmanagementsystem.service.AuthService;
 import com.mouli.studentmanagementsystem.dto.VerifyOtpRequestDTO;
 import com.mouli.studentmanagementsystem.dto.ResetPasswordRequestDTO;
+import com.mouli.studentmanagementsystem.dto.SendRegistrationOtpRequestDTO;
+import com.mouli.studentmanagementsystem.dto.VerifyRegistrationOtpRequestDTO;
 
 import jakarta.validation.Valid;
 
@@ -58,6 +61,24 @@ public class AuthController {
         System.out.println("VERIFY OTP API HIT");
 
         return authService.verifyOtp(requestDTO);
+    }
+    
+    @PostMapping("/send-registration-otp")
+    public AuthResponseDTO sendRegistrationOtp(
+            @Valid @RequestBody
+            SendRegistrationOtpRequestDTO requestDTO) {
+
+        return authService.sendRegistrationOtp(
+                requestDTO);
+    }
+
+    @PostMapping("/verify-registration-otp")
+    public AuthResponseDTO verifyRegistrationOtp(
+            @Valid @RequestBody
+            VerifyRegistrationOtpRequestDTO requestDTO) {
+
+        return authService.verifyRegistrationOtp(
+                requestDTO);
     }
     
 }
