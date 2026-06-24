@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
+import { Link } from "react-router-dom";
 
 function Login() {
 
@@ -99,11 +100,31 @@ function Login() {
                                 </div>
 
                                 <button
-                                    className="btn btn-primary w-100">
+    className="btn btn-primary w-100">
 
-                                    Login
+    Login
 
-                                </button>
+</button>
+
+<div className="text-center mt-3">
+
+    <Link to="/forgot-password">
+
+        Forgot Password?
+
+    </Link>
+
+</div>
+
+<div className="text-center mt-2">
+
+    <Link to="/register">
+
+        Don't have an account? Register
+
+    </Link>
+
+</div>
 
                             </form>
 
