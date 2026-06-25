@@ -15,30 +15,40 @@ function Login() {
 
     const handleSubmit = async (e) => {
 
-        e.preventDefault();
+    e.preventDefault();
 
-        try {
+    try {
 
-            const response =
-                await AuthService.login({
-                    username,
-                    password
-                });
+        const response =
+            await AuthService.login({
+                username,
+                password
+            });
 
-            localStorage.setItem(
-                "token",
-                response.data.token
-            );
+        localStorage.setItem(
+            "token",
+            response.data.token
+        );
 
-            navigate("/dashboard");
+        localStorage.setItem(
+            "role",
+            response.data.role
+        );
 
-        } catch (err) {
+        localStorage.setItem(
+            "username",
+            username
+        );
 
-            setError(
-                "Invalid Username or Password"
-            );
-        }
-    };
+        navigate("/dashboard");
+
+    } catch (err) {
+
+        setError(
+            "Invalid Username or Password"
+        );
+    }
+};
 
     return (
 

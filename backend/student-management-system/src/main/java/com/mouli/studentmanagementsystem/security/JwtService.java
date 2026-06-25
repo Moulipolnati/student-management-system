@@ -2,6 +2,8 @@ package com.mouli.studentmanagementsystem.security;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
@@ -21,11 +23,20 @@ public class JwtService {
             Keys.hmacShaKeyFor(
                     SECRET_KEY.getBytes());
 
-    // Generate Token
+    // Generate Token with Role
     public String generateToken(
-            String username) {
+            String username,
+            String role) {
+
+        Map<String, Object> claims =
+                new HashMap<>();
+
+        claims.put(
+                "role",
+                role);
 
         return Jwts.builder()
+                .claims(claims)
                 .subject(username)
                 .issuedAt(new Date())
                 .expiration(
@@ -45,15 +56,23 @@ public class JwtService {
                 .getSubject();
     }
 
+    // Extract Role
+    public String extractRole(
+            String token) {
+
+        return extractClaims(token)
+                .get(
+                        "role",
+                        String.class);
+    }
+
     // Validate Token
     public boolean isTokenValid(
             String token,
             String username) {
 
-        String extractedUsername =
-                extractUsername(token);
-
-        return extractedUsername.equals(username);
+        return extractUsername(token)
+                .equals(username);
     }
 
     // Extract Claims

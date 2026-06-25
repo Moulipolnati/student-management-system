@@ -4,9 +4,19 @@ function Navbar() {
 
     const navigate = useNavigate();
 
+    const username =
+        localStorage.getItem("username");
+
+    const role =
+        localStorage.getItem("role");
+
     const handleLogout = () => {
 
         localStorage.removeItem("token");
+
+        localStorage.removeItem("role");
+
+        localStorage.removeItem("username");
 
         navigate("/login");
     };
@@ -26,6 +36,14 @@ function Navbar() {
                 </Link>
 
                 <div className="navbar-nav">
+
+                    <Link
+                        className="nav-link"
+                        to="/dashboard">
+
+                        Dashboard
+
+                    </Link>
 
                     <Link
                         className="nav-link"
@@ -51,8 +69,30 @@ function Navbar() {
 
                     </Link>
 
+                </div>
+
+                <div className="d-flex align-items-center">
+
+                    <span className="text-white me-3">
+
+                        Welcome,
+                        {" "}
+                        <strong>
+                            {username}
+                        </strong>
+
+                        {" | "}
+
+                        {
+                            role === "ROLE_ADMIN"
+                                ? "Admin"
+                                : "User"
+                        }
+
+                    </span>
+
                     <button
-                        className="btn btn-danger ms-3"
+                        className="btn btn-danger"
                         onClick={handleLogout}>
 
                         Logout

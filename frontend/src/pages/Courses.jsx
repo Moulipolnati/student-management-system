@@ -4,6 +4,9 @@ import CourseService from "../services/CourseService";
 
 function Courses() {
 
+    const role =
+        localStorage.getItem("role");
+
     const [courses, setCourses] = useState([]);
 
     const [editingId, setEditingId] = useState(null);
@@ -121,146 +124,169 @@ function Courses() {
 
             <div className="container mt-4">
 
+                {role === "ROLE_ADMIN" && (
+
+                    <>
+
+                        <h2>
+
+                            {editingId
+                                ? "Update Course"
+                                : "Add Course"}
+
+                        </h2>
+
+                        <form onSubmit={handleSubmit}>
+
+                            <div className="row">
+
+                                <div className="col-md-6 mb-3">
+
+                                    <input
+                                        type="text"
+                                        name="courseName"
+                                        placeholder="Course Name"
+                                        className="form-control"
+                                        value={course.courseName}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                </div>
+
+                                <div className="col-md-6 mb-3">
+
+                                    <input
+                                        type="text"
+                                        name="duration"
+                                        placeholder="Duration"
+                                        className="form-control"
+                                        value={course.duration}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                </div>
+
+                                <div className="col-md-12 mb-3">
+
+                                    <input
+                                        type="text"
+                                        name="description"
+                                        placeholder="Description"
+                                        className="form-control"
+                                        value={course.description}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                </div>
+
+                                <div className="col-md-6 mb-3">
+
+                                    <input
+                                        type="number"
+                                        name="fee"
+                                        placeholder="Fee"
+                                        className="form-control"
+                                        value={course.fee}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                </div>
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="btn btn-primary">
+
+                                {editingId
+                                    ? "Update Course"
+                                    : "Save Course"}
+
+                            </button>
+
+                        </form>
+
+                        <hr />
+
+                    </>
+
+                )}
+
                 <h2>
-                    {editingId
-                        ? "Update Course"
-                        : "Add Course"}
+
+                    Courses List
+
                 </h2>
-
-                <form onSubmit={handleSubmit}>
-
-                    <div className="row">
-
-                        <div className="col-md-6 mb-3">
-
-                            <input
-                                type="text"
-                                name="courseName"
-                                placeholder="Course Name"
-                                className="form-control"
-                                value={course.courseName}
-                                onChange={handleChange}
-                                required
-                            />
-
-                        </div>
-
-                        <div className="col-md-6 mb-3">
-
-                            <input
-                                type="text"
-                                name="duration"
-                                placeholder="Duration"
-                                className="form-control"
-                                value={course.duration}
-                                onChange={handleChange}
-                                required
-                            />
-
-                        </div>
-
-                        <div className="col-md-12 mb-3">
-
-                            <input
-                                type="text"
-                                name="description"
-                                placeholder="Description"
-                                className="form-control"
-                                value={course.description}
-                                onChange={handleChange}
-                                required
-                            />
-
-                        </div>
-
-                        <div className="col-md-6 mb-3">
-
-                            <input
-                                type="number"
-                                name="fee"
-                                placeholder="Fee"
-                                className="form-control"
-                                value={course.fee}
-                                onChange={handleChange}
-                                required
-                            />
-
-                        </div>
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="btn btn-primary">
-
-                        {editingId
-                            ? "Update Course"
-                            : "Save Course"}
-
-                    </button>
-
-                </form>
-
-                <hr />
-
-                <h2>Courses List</h2>
 
                 <table className="table table-bordered">
 
                     <thead>
 
-                    <tr>
+                        <tr>
 
-                        <th>ID</th>
-                        <th>Course Name</th>
-                        <th>Description</th>
-                        <th>Duration</th>
-                        <th>Fee</th>
-                        <th>Actions</th>
+                            <th>ID</th>
+                            <th>Course Name</th>
+                            <th>Description</th>
+                            <th>Duration</th>
+                            <th>Fee</th>
 
-                    </tr>
+                            {role === "ROLE_ADMIN" &&
+
+                                <th>Actions</th>
+
+                            }
+
+                        </tr>
 
                     </thead>
 
                     <tbody>
 
-                    {courses.map(course => (
+                        {courses.map(course => (
 
-                        <tr key={course.id}>
+                            <tr key={course.id}>
 
-                            <td>{course.id}</td>
-                            <td>{course.courseName}</td>
-                            <td>{course.description}</td>
-                            <td>{course.duration}</td>
-                            <td>{course.fee}</td>
+                                <td>{course.id}</td>
+                                <td>{course.courseName}</td>
+                                <td>{course.description}</td>
+                                <td>{course.duration}</td>
+                                <td>{course.fee}</td>
 
-                            <td>
+                                {role === "ROLE_ADMIN" && (
 
-                                <button
-                                    className="btn btn-warning btn-sm me-2"
-                                    onClick={() =>
-                                        handleEdit(course)
-                                    }>
+                                    <td>
 
-                                    Edit
+                                        <button
+                                            className="btn btn-warning btn-sm me-2"
+                                            onClick={() =>
+                                                handleEdit(course)
+                                            }>
 
-                                </button>
+                                            Edit
 
-                                <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() =>
-                                        handleDelete(course.id)
-                                    }>
+                                        </button>
 
-                                    Delete
+                                        <button
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() =>
+                                                handleDelete(course.id)
+                                            }>
 
-                                </button>
+                                            Delete
 
-                            </td>
+                                        </button>
 
-                        </tr>
+                                    </td>
 
-                    ))}
+                                )}
+
+                            </tr>
+
+                        ))}
 
                     </tbody>
 
@@ -269,6 +295,7 @@ function Courses() {
             </div>
 
         </>
+
     );
 }
 

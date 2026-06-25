@@ -3,12 +3,17 @@ package com.mouli.studentmanagementsystem.dto;
 public class AuthResponseDTO {
 
     private String message;
+
     private String token;
+
+    private String role;
 
     public AuthResponseDTO() {
     }
 
-    public AuthResponseDTO(String message) {
+    public AuthResponseDTO(
+            String message) {
+
         this.message = message;
     }
 
@@ -18,6 +23,16 @@ public class AuthResponseDTO {
 
         this.message = message;
         this.token = token;
+    }
+
+    public AuthResponseDTO(
+            String message,
+            String token,
+            String role) {
+
+        this.message = message;
+        this.token = token;
+        this.role = role;
     }
 
     public String getMessage() {
@@ -38,5 +53,15 @@ public class AuthResponseDTO {
             String token) {
 
         this.token = token;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(
+            String role) {
+
+        this.role = role;
     }
 }

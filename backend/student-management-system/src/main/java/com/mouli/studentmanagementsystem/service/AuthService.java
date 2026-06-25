@@ -109,11 +109,13 @@ public class AuthService {
 
         String token =
                 jwtService.generateToken(
-                        user.getUsername());
+                        user.getUsername(),
+                        user.getRole().name());
 
         return new AuthResponseDTO(
                 "Login successful",
-                token);
+                token,
+                user.getRole().name());
     }
 
     // Forgot Password

@@ -4,6 +4,9 @@ import StudentService from "../services/StudentService";
 
 function Students() {
 
+    const role =
+        localStorage.getItem("role");
+
     const [students, setStudents] = useState([]);
 
     const [keyword, setKeyword] = useState("");
@@ -48,7 +51,9 @@ function Students() {
             }
 
             const response =
-                await StudentService.searchStudents(keyword);
+                await StudentService.searchStudents(
+                    keyword
+                );
 
             setStudents(response.data);
 
@@ -141,7 +146,9 @@ function Students() {
     };
 
     return (
+
         <>
+
             <Navbar />
 
             <div className="container mt-4">
@@ -156,7 +163,8 @@ function Students() {
                             placeholder="Search Student..."
                             value={keyword}
                             onChange={(e) =>
-                                setKeyword(e.target.value)}
+                                setKeyword(e.target.value)
+                            }
                         />
 
                     </div>
@@ -175,152 +183,197 @@ function Students() {
 
                 </div>
 
+                {role === "ROLE_ADMIN" && (
+
+                    <>
+
+                        <h2>
+
+                            {editingId
+                                ? "Update Student"
+                                : "Add Student"}
+
+                        </h2>
+
+                        <form onSubmit={handleSubmit}>
+
+                            <div className="row">
+
+                                <div className="col-md-6 mb-3">
+
+                                    <input
+                                        type="text"
+                                        name="firstName"
+                                        placeholder="First Name"
+                                        className="form-control"
+                                        value={student.firstName}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                </div>
+
+                                <div className="col-md-6 mb-3">
+
+                                    <input
+                                        type="text"
+                                        name="lastName"
+                                        placeholder="Last Name"
+                                        className="form-control"
+                                        value={student.lastName}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                </div>
+
+                                <div className="col-md-6 mb-3">
+
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        placeholder="Email"
+                                        className="form-control"
+                                        value={student.email}
+                                        onChange={handleChange}
+                                    />
+
+                                </div>
+
+                                <div className="col-md-6 mb-3">
+
+                                    <input
+                                        type="text"
+                                        name="phone"
+                                        placeholder="Phone"
+                                        className="form-control"
+                                        value={student.phone}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                </div>
+
+                                <div className="col-md-12 mb-3">
+
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        placeholder="Address"
+                                        className="form-control"
+                                        value={student.address}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                </div>
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="btn btn-primary">
+
+                                {editingId
+                                    ? "Update Student"
+                                    : "Save Student"}
+
+                            </button>
+
+                        </form>
+
+                        <hr />
+
+                    </>
+
+                )}
+
                 <h2>
-                    {editingId
-                        ? "Update Student"
-                        : "Add Student"}
+
+                    Students List
+
                 </h2>
-
-                <form onSubmit={handleSubmit}>
-
-                    <div className="row">
-
-                        <div className="col-md-6 mb-3">
-                            <input
-                                type="text"
-                                name="firstName"
-                                placeholder="First Name"
-                                className="form-control"
-                                value={student.firstName}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-
-                        <div className="col-md-6 mb-3">
-                            <input
-                                type="text"
-                                name="lastName"
-                                placeholder="Last Name"
-                                className="form-control"
-                                value={student.lastName}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-
-                        <div className="col-md-6 mb-3">
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="Email"
-                                className="form-control"
-                                value={student.email}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="col-md-6 mb-3">
-                            <input
-                                type="text"
-                                name="phone"
-                                placeholder="Phone"
-                                className="form-control"
-                                value={student.phone}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-
-                        <div className="col-md-12 mb-3">
-                            <input
-                                type="text"
-                                name="address"
-                                placeholder="Address"
-                                className="form-control"
-                                value={student.address}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="btn btn-primary">
-
-                        {editingId
-                            ? "Update Student"
-                            : "Save Student"}
-
-                    </button>
-
-                </form>
-
-                <hr />
-
-                <h2>Students List</h2>
 
                 <table className="table table-bordered">
 
                     <thead>
 
-                    <tr>
-                        <th>ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Actions</th>
-                    </tr>
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>First Name</th>
+
+                            <th>Last Name</th>
+
+                            <th>Email</th>
+
+                            {
+                                role === "ROLE_ADMIN" &&
+
+                                <th>
+                                    Actions
+                                </th>
+                            }
+
+                        </tr>
 
                     </thead>
 
                     <tbody>
 
-                    {students.map(student => (
+                        {students.map(student => (
 
-                        <tr key={student.id}>
+                            <tr key={student.id}>
 
-                            <td>{student.id}</td>
-                            <td>{student.firstName}</td>
-                            <td>{student.lastName}</td>
-                            <td>{student.email}</td>
+                                <td>{student.id}</td>
 
-                            <td>
+                                <td>{student.firstName}</td>
 
-                                <button
-                                    className="btn btn-warning btn-sm me-2"
-                                    onClick={() =>
-                                        handleEdit(student)
-                                    }>
+                                <td>{student.lastName}</td>
 
-                                    Edit
+                                <td>{student.email}</td>
 
-                                </button>
+                                {role === "ROLE_ADMIN" && (
 
-                                <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() =>
-                                        handleDelete(student.id)
-                                    }>
+                                    <td>
 
-                                    Delete
+                                        <button
+                                            className="btn btn-warning btn-sm me-2"
+                                            onClick={() =>
+                                                handleEdit(student)
+                                            }>
 
-                                </button>
+                                            Edit
 
-                            </td>
+                                        </button>
 
-                        </tr>
+                                        <button
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() =>
+                                                handleDelete(student.id)
+                                            }>
 
-                    ))}
+                                            Delete
+
+                                        </button>
+
+                                    </td>
+
+                                )}
+
+                            </tr>
+
+                        ))}
 
                     </tbody>
 
                 </table>
 
             </div>
+
         </>
+
     );
 }
 

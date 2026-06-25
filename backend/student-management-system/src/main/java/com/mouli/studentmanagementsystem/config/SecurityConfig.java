@@ -32,16 +32,76 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                    .requestMatchers(
-                            "/auth/**",
+            	    // Public APIs
+            	    .requestMatchers(
+            	            "/auth/**",
+            	            "/swagger-ui/**",
+            	            "/swagger-ui.html",
+            	            "/v3/api-docs/**")
+            	    .permitAll()
 
-                            "/swagger-ui/**",
-                            "/swagger-ui.html",
-                            "/v3/api-docs/**")
-                    .permitAll()
+            	    // Student APIs
+            	    .requestMatchers(
+            	            "/students",
+            	            "/students/page",
+            	            "/students/search",
+            	            "/students/*")
+            	    .hasAnyRole("ADMIN", "USER")
 
-                    .anyRequest()
-                    .authenticated())
+            	    .requestMatchers(
+            	            org.springframework.http.HttpMethod.POST,
+            	            "/students")
+            	    .hasRole("ADMIN")
+
+            	    .requestMatchers(
+            	            org.springframework.http.HttpMethod.PUT,
+            	            "/students/*")
+            	    .hasRole("ADMIN")
+
+            	    .requestMatchers(
+            	            org.springframework.http.HttpMethod.DELETE,
+            	            "/students/*")
+            	    .hasRole("ADMIN")
+
+            	    // Course APIs
+            	    .requestMatchers(
+            	            org.springframework.http.HttpMethod.GET,
+            	            "/courses/**")
+            	    .hasAnyRole("ADMIN", "USER")
+
+            	    .requestMatchers(
+            	            org.springframework.http.HttpMethod.POST,
+            	            "/courses/**")
+            	    .hasRole("ADMIN")
+
+            	    .requestMatchers(
+            	            org.springframework.http.HttpMethod.PUT,
+            	            "/courses/**")
+            	    .hasRole("ADMIN")
+
+            	    .requestMatchers(
+            	            org.springframework.http.HttpMethod.DELETE,
+            	            "/courses/**")
+            	    .hasRole("ADMIN")
+
+            	    // Enrollment APIs
+            	    .requestMatchers(
+            	            org.springframework.http.HttpMethod.GET,
+            	            "/enrollments/**")
+            	    .hasAnyRole("ADMIN", "USER")
+
+            	    .requestMatchers(
+            	            org.springframework.http.HttpMethod.POST,
+            	            "/enrollments/**")
+            	    .hasRole("ADMIN")
+
+            	    .requestMatchers(
+            	            org.springframework.http.HttpMethod.DELETE,
+            	            "/enrollments/**")
+            	    .hasRole("ADMIN")
+
+            	    .anyRequest()
+            	    .authenticated())
 
             .addFilterBefore(
                     jwtAuthenticationFilter,

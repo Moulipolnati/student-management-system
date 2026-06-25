@@ -6,6 +6,9 @@ import CourseService from "../services/CourseService";
 
 function Enrollments() {
 
+    const role =
+        localStorage.getItem("role");
+
     const [enrollments, setEnrollments] = useState([]);
     const [students, setStudents] = useState([]);
     const [courses, setCourses] = useState([]);
@@ -129,141 +132,162 @@ function Enrollments() {
 
             <div className="container mt-4">
 
-                <h2>Create Enrollment</h2>
+                {role === "ROLE_ADMIN" && (
 
-                <form onSubmit={handleSubmit}>
+                    <>
 
-                    <div className="row">
+                        <h2>
+                            Create Enrollment
+                        </h2>
 
-                        <div className="col-md-6 mb-3">
+                        <form onSubmit={handleSubmit}>
 
-                            <select
-                                name="studentId"
-                                className="form-control"
-                                value={enrollment.studentId}
-                                onChange={handleChange}
-                                required>
+                            <div className="row">
 
-                                <option value="">
-                                    Select Student
-                                </option>
+                                <div className="col-md-6 mb-3">
 
-                                {students.map(student => (
+                                    <select
+                                        name="studentId"
+                                        className="form-control"
+                                        value={enrollment.studentId}
+                                        onChange={handleChange}
+                                        required>
 
-                                    <option
-                                        key={student.id}
-                                        value={student.id}>
+                                        <option value="">
+                                            Select Student
+                                        </option>
 
-                                        {student.firstName} {student.lastName}
+                                        {students.map(student => (
 
-                                    </option>
+                                            <option
+                                                key={student.id}
+                                                value={student.id}>
 
-                                ))}
+                                                {student.firstName} {student.lastName}
 
-                            </select>
+                                            </option>
 
-                        </div>
+                                        ))}
 
-                        <div className="col-md-6 mb-3">
+                                    </select>
 
-                            <select
-                                name="courseId"
-                                className="form-control"
-                                value={enrollment.courseId}
-                                onChange={handleChange}
-                                required>
+                                </div>
 
-                                <option value="">
-                                    Select Course
-                                </option>
+                                <div className="col-md-6 mb-3">
 
-                                {courses.map(course => (
+                                    <select
+                                        name="courseId"
+                                        className="form-control"
+                                        value={enrollment.courseId}
+                                        onChange={handleChange}
+                                        required>
 
-                                    <option
-                                        key={course.id}
-                                        value={course.id}>
+                                        <option value="">
+                                            Select Course
+                                        </option>
 
-                                        {course.courseName}
+                                        {courses.map(course => (
 
-                                    </option>
+                                            <option
+                                                key={course.id}
+                                                value={course.id}>
 
-                                ))}
+                                                {course.courseName}
 
-                            </select>
+                                            </option>
 
-                        </div>
+                                        ))}
 
-                    </div>
+                                    </select>
 
-                    <button
-                        type="submit"
-                        className="btn btn-primary">
+                                </div>
 
-                        Enroll Student
+                            </div>
 
-                    </button>
+                            <button
+                                type="submit"
+                                className="btn btn-primary">
 
-                </form>
+                                Enroll Student
 
-                <hr />
+                            </button>
 
-                <h2>Enrollments List</h2>
+                        </form>
+
+                        <hr />
+
+                    </>
+
+                )}
+
+                <h2>
+                    Enrollments List
+                </h2>
 
                 <table className="table table-bordered">
 
                     <thead>
 
-                    <tr>
+                        <tr>
 
-                        <th>ID</th>
-                        <th>Student</th>
-                        <th>Course</th>
-                        <th>Enrollment Date</th>
-                        <th>Actions</th>
+                            <th>ID</th>
+                            <th>Student</th>
+                            <th>Course</th>
+                            <th>Enrollment Date</th>
 
-                    </tr>
+                            {role === "ROLE_ADMIN" &&
+
+                                <th>Actions</th>
+
+                            }
+
+                        </tr>
 
                     </thead>
 
                     <tbody>
 
-                    {enrollments.map(enrollment => (
+                        {enrollments.map(enrollment => (
 
-                        <tr key={enrollment.id}>
+                            <tr key={enrollment.id}>
 
-                            <td>{enrollment.id}</td>
+                                <td>{enrollment.id}</td>
 
-                            <td>
-                                {enrollment.studentName}
-                            </td>
+                                <td>
+                                    {enrollment.studentName}
+                                </td>
 
-                            <td>
-                                {enrollment.courseName}
-                            </td>
+                                <td>
+                                    {enrollment.courseName}
+                                </td>
 
-                            <td>
-                                {enrollment.enrollmentDate}
-                            </td>
+                                <td>
+                                    {enrollment.enrollmentDate}
+                                </td>
 
-                            <td>
+                                {role === "ROLE_ADMIN" && (
 
-                                <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() =>
-                                        handleDelete(
-                                            enrollment.id
-                                        )
-                                    }>
+                                    <td>
 
-                                    Delete
+                                        <button
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() =>
+                                                handleDelete(
+                                                    enrollment.id
+                                                )
+                                            }>
 
-                                </button>
+                                            Delete
 
-                            </td>
+                                        </button>
 
-                        </tr>
+                                    </td>
 
-                    ))}
+                                )}
+
+                            </tr>
+
+                        ))}
 
                     </tbody>
 
